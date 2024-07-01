@@ -37,9 +37,9 @@ import type {
     ThreadParentChannel,
     UncachedThreadMember,
     AnyVoiceChannel,
-    PollAnswer
+    PollAnswer,
+    AnyGuildChannel
 } from "../types/channels";
-import type TextChannel from "../structures/TextChannel";
 import type { JSONAnnouncementThreadChannel } from "../types/json";
 import VoiceChannel from "../structures/VoiceChannel";
 import StageChannel from "../structures/StageChannel";
@@ -331,8 +331,17 @@ export default class Shard extends TypedEmitter<ShardEvents> {
             }
 
             case "CHANNEL_UPDATE": {
-                const oldChannel = this.client.getChannel<TextChannel>(packet.d.id)?.toJSON() ?? null;
-                const channel = this.client.util.updateChannel<TextChannel>(packet.d);
+                const oldChannel = this.client.getChannel<AnyGuildChannel>(packet.d.id)?.toJSON() ?? null;
+                let channel: AnyGuildChannel;
+                if (oldChannel && oldChannel.type !== packet.d.type) {
+                    if (this.client.channelGuildMap[packet.d.id]) {
+                        this.client.guilds.get(this.client.channelGuildMap[packet.d.id])!.channels.delete(packet.d.id);
+                    }
+
+                    channel = this.client.util.updateChannel(packet.d);
+                } else {
+                    channel = this.client.util.updateChannel(packet.d);
+                }
                 this.client.emit("channelUpdate", channel, oldChannel);
                 break;
             }

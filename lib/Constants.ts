@@ -27,6 +27,20 @@ import type {
     RawVoiceChannel
 } from "./types/channels";
 import type MediaChannel from "./structures/MediaChannel";
+import type {
+    JSONAnnouncementChannel,
+    JSONAnnouncementThreadChannel,
+    JSONCategoryChannel,
+    JSONForumChannel,
+    JSONGroupChannel,
+    JSONMediaChannel,
+    JSONPrivateChannel,
+    JSONPrivateThreadChannel,
+    JSONPublicThreadChannel,
+    JSONStageChannel,
+    JSONTextChannel,
+    JSONVoiceChannel
+} from "./types";
 import pkg from "../package.json";
 
 export const GATEWAY_VERSION = 10;
@@ -397,6 +411,21 @@ export interface RawChannelTypeMap {
     [ChannelTypes.GUILD_DIRECTORY]: never;
     [ChannelTypes.GUILD_FORUM]: RawForumChannel;
     [ChannelTypes.GUILD_MEDIA]: RawMediaChannel;
+}
+export interface JSONChannelTypeMap {
+    [ChannelTypes.GUILD_TEXT]: JSONTextChannel;
+    [ChannelTypes.DM]: JSONPrivateChannel;
+    [ChannelTypes.GUILD_VOICE]: JSONVoiceChannel;
+    [ChannelTypes.GROUP_DM]: JSONGroupChannel;
+    [ChannelTypes.GUILD_CATEGORY]: JSONCategoryChannel;
+    [ChannelTypes.GUILD_ANNOUNCEMENT]: JSONAnnouncementChannel;
+    [ChannelTypes.ANNOUNCEMENT_THREAD]: JSONAnnouncementThreadChannel;
+    [ChannelTypes.PUBLIC_THREAD]: JSONPublicThreadChannel;
+    [ChannelTypes.PRIVATE_THREAD]: JSONPrivateThreadChannel;
+    [ChannelTypes.GUILD_STAGE_VOICE]: JSONStageChannel;
+    [ChannelTypes.GUILD_DIRECTORY]: never;
+    [ChannelTypes.GUILD_FORUM]: JSONForumChannel;
+    [ChannelTypes.GUILD_MEDIA]: JSONMediaChannel;
 }
 /* eslint-enable @typescript-eslint/member-ordering */
 

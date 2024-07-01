@@ -12,18 +12,17 @@ import type {
     UncachedThreadMember,
     AnyVoiceChannel,
     PollAnswer,
-    EventReaction
+    EventReaction,
+    GuildChannels,
+    AnyGuildChannel
 } from "./channels";
 import type { RawRequest } from "./request-handler";
 import type { AutoModerationActionExecution, DeletedPrivateChannel, VoiceChannelEffect } from "./gateway";
 import type { AnyDispatchPacket } from "./gateway-raw";
 import type { Uncached } from "./shared";
 import type {
-    JSONAnnouncementChannel,
     JSONAnnouncementThreadChannel,
     JSONAutoModerationRule,
-    JSONCategoryChannel,
-    JSONThreadOnlyChannel,
     JSONGuild,
     JSONIntegration,
     JSONMember,
@@ -32,11 +31,8 @@ import type {
     JSONPublicThreadChannel,
     JSONRole,
     JSONScheduledEvent,
-    JSONStageChannel,
     JSONStageInstance,
-    JSONTextChannel,
     JSONUser,
-    JSONVoiceChannel,
     JSONVoiceState,
     JSONEntitlement,
     JSONTestEntitlement
@@ -56,10 +52,7 @@ import type AutoModerationRule from "../structures/AutoModerationRule";
 import type AnnouncementThreadChannel from "../structures/AnnouncementThreadChannel";
 import type PublicThreadChannel from "../structures/PublicThreadChannel";
 import type PrivateThreadChannel from "../structures/PrivateThreadChannel";
-import type TextChannel from "../structures/TextChannel";
 import type VoiceChannel from "../structures/VoiceChannel";
-import type CategoryChannel from "../structures/CategoryChannel";
-import type AnnouncementChannel from "../structures/AnnouncementChannel";
 import type StageChannel from "../structures/StageChannel";
 import type User from "../structures/User";
 import type Member from "../structures/Member";
@@ -70,11 +63,11 @@ import type Invite from "../structures/Invite";
 import type Message from "../structures/Message";
 import type PrivateChannel from "../structures/PrivateChannel";
 import type StageInstance from "../structures/StageInstance";
-import type ForumChannel from "../structures/ForumChannel";
 import type AuditLogEntry from "../structures/AuditLogEntry";
 import type GroupChannel from "../structures/GroupChannel";
 import type Entitlement from "../structures/Entitlement";
 import type TestEntitlement from "../structures/TestEntitlement";
+import type { JSONChannelTypeMap } from "../Constants";
 
 
 export interface ClientEvents {
@@ -95,7 +88,7 @@ export interface ClientEvents {
     /** @event Emitted when a channel's pins are updated (message pinned, message unpinned). Requires the `GUILDS` intent for guild channels, and `DIRECT_MESSAGES` for direct messages. */
     channelPinsUpdate: [channel: AnyTextableChannel | Uncached, timestamp: Date | null];
     /** @event Emitted when a channel is updated. Requires the `GUILDS` intent. */
-    channelUpdate: [channel: TextChannel, oldChannel: JSONTextChannel | null] | [channel: VoiceChannel, oldChannel: JSONVoiceChannel | null] | [channel: CategoryChannel, oldChannel: JSONCategoryChannel | null] | [channel: AnnouncementChannel, oldChannel: JSONAnnouncementChannel | null] | [channel: StageChannel, oldChannel: JSONStageChannel | null] | [channel: ForumChannel, oldChannel: JSONThreadOnlyChannel | null];
+    channelUpdate: [channel: AnyGuildChannel, oldChannel: JSONChannelTypeMap[GuildChannels] | null];
     /** @event Emitted when a shard connects. */
     connect: [id: number];
     /** @event Emitted with various information for debugging. */
