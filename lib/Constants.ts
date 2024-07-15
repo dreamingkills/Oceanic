@@ -1,4 +1,4 @@
-/* eslint-disable unicorn/prefer-math-trunc */
+/* eslint-disable unicorn/prefer-math-trunc, @typescript-eslint/no-duplicate-enum-values */
 /** @module Constants */
 import type PrivateChannel from "./structures/PrivateChannel";
 import type TextChannel from "./structures/TextChannel";
@@ -176,6 +176,8 @@ export enum ApplicationFlags {
     /** Indicates if an app has registered global {@link https://discord.com/developers/docs/interactions/application-commands | application commands}. */
     APPLICATION_COMMAND_BADGE                     = 1 << 23,
     ACTIVE                                        = 1 << 24,
+
+    SOCIAL_LAYER_INTEGRATION                      = 1 << 27,
 }
 
 export const GuildFeatures = [
@@ -350,7 +352,14 @@ export enum ChannelTypes {
     GROUP_DM             = 3,
     GUILD_CATEGORY       = 4,
     GUILD_ANNOUNCEMENT   = 5,
-
+    /** @deprecated Doesn't exist anymore. */
+    GUILD_STORE          = 6,
+    /** @deprecated Doesn't exist anymore. */
+    GUILD_LFG            = 7,
+    /** @deprecated Doesn't exist anymore. */
+    LFG_GROUP_DM         = 8,
+    /** @deprecated Doesn't exist anymore. */
+    THREAD_ALPHA         = 9,
     ANNOUNCEMENT_THREAD  = 10,
     PUBLIC_THREAD        = 11,
     PRIVATE_THREAD       = 12,
@@ -365,7 +374,7 @@ function exclude<T extends ChannelTypes, E extends ChannelTypes>(original: Reado
 }
 
 export const AnyChannelTypes = Object.values(ChannelTypes).filter(v => typeof v === "number") as Array<ChannelTypes>;
-export const NotImplementedChannelTypes = [ChannelTypes.GUILD_DIRECTORY] as const;
+export const NotImplementedChannelTypes = [ChannelTypes.GUILD_STORE, ChannelTypes.GUILD_LFG, ChannelTypes.LFG_GROUP_DM, ChannelTypes.THREAD_ALPHA, ChannelTypes.GUILD_DIRECTORY] as const;
 export const ImplementedChannelTypes = exclude(AnyChannelTypes, NotImplementedChannelTypes);
 export const GuildChannelTypes = [ChannelTypes.GUILD_TEXT, ChannelTypes.GUILD_VOICE, ChannelTypes.GUILD_CATEGORY, ChannelTypes.GUILD_ANNOUNCEMENT, ChannelTypes.ANNOUNCEMENT_THREAD, ChannelTypes.PUBLIC_THREAD, ChannelTypes.PRIVATE_THREAD, ChannelTypes.GUILD_STAGE_VOICE, ChannelTypes.GUILD_DIRECTORY, ChannelTypes.GUILD_FORUM, ChannelTypes.GUILD_MEDIA] as const;
 export const ThreadChannelTypes = [ChannelTypes.ANNOUNCEMENT_THREAD, ChannelTypes.PUBLIC_THREAD, ChannelTypes.PRIVATE_THREAD] as const;
@@ -389,6 +398,10 @@ export interface ChannelTypeMap {
     [ChannelTypes.GROUP_DM]: GroupChannel;
     [ChannelTypes.GUILD_CATEGORY]: CategoryChannel;
     [ChannelTypes.GUILD_ANNOUNCEMENT]: AnnouncementChannel;
+    [ChannelTypes.GUILD_STORE]: never;
+    [ChannelTypes.GUILD_LFG]: never;
+    [ChannelTypes.LFG_GROUP_DM]: never;
+    [ChannelTypes.THREAD_ALPHA]: never;
     [ChannelTypes.ANNOUNCEMENT_THREAD]: AnnouncementThreadChannel;
     [ChannelTypes.PUBLIC_THREAD]: PublicThreadChannel;
     [ChannelTypes.PRIVATE_THREAD]: PrivateThreadChannel;
@@ -404,6 +417,10 @@ export interface RawChannelTypeMap {
     [ChannelTypes.GROUP_DM]: RawGroupChannel;
     [ChannelTypes.GUILD_CATEGORY]: RawCategoryChannel;
     [ChannelTypes.GUILD_ANNOUNCEMENT]: RawAnnouncementChannel;
+    [ChannelTypes.GUILD_STORE]: never;
+    [ChannelTypes.GUILD_LFG]: never;
+    [ChannelTypes.LFG_GROUP_DM]: never;
+    [ChannelTypes.THREAD_ALPHA]: never;
     [ChannelTypes.ANNOUNCEMENT_THREAD]: RawAnnouncementThreadChannel;
     [ChannelTypes.PUBLIC_THREAD]: RawPublicThreadChannel;
     [ChannelTypes.PRIVATE_THREAD]: RawPrivateThreadChannel;
@@ -690,6 +707,7 @@ export enum ChannelFlags {
     IS_BROADCASTING                               = 1 << 14,
     /** For media channls, hides the embedded media download options. */
     HIDE_MEDIA_DOWNLOAD_OPTIONS                   = 1 << 15,
+    IS_JOIN_REQUEST_INTERVIEW_CHANNEL             = 1 << 16,
 }
 
 export enum SortOrderTypes {
@@ -782,6 +800,14 @@ export enum ComponentTypes {
     ROLE_SELECT        = 6,
     MENTIONABLE_SELECT = 7,
     CHANNEL_SELECT     = 8,
+
+    TEXT = 10,
+
+    MEDIA_GALLERY = 12,
+
+    SEPARATOR = 14,
+
+    CONTENT_INVENTORY_ENTRY = 16,
 }
 
 export type SelectMenuNonResolvedTypes = ComponentTypes.STRING_SELECT;
@@ -818,6 +844,8 @@ export enum MessageFlags {
     SHOULD_SHOW_LINK_NOT_DISCORD_WARNING   = 1 << 10,
     SUPPRESS_NOTIFICATIONS                 = 1 << 12,
     IS_VOICE_MESSAGE                       = 1 << 13,
+    HAS_SNAPSHOT                           = 1 << 14,
+    IS_UIKIT_COMPONENTS                    = 1 << 15,
 }
 
 export enum MessageTypes {
@@ -866,6 +894,10 @@ export enum MessageTypes {
     GUILD_GAMING_STATS_PROMPT                    = 42,
     POLL                                         = 43,
     PURCHASE_NOTIFICATION                        = 44,
+    VOICE_HANGOUT_INVITE                         = 45,
+    POLL_RESULT                                  = 46,
+    CHANGELOG                                    = 47,
+    NITRO_NOTIFICATION                           = 48,
 }
 
 /** Messages of these types cannot be deleted. */
@@ -1047,6 +1079,11 @@ export enum AuditLogActionTypes {
     HOME_SETTINGS_UPDATE        = 191,
     VOICE_CHANNEL_STATUS_CREATE = 192,
     VOICE_CHANNEL_STATUS_DELETE = 193,
+    CLYDE_AI_PROFILE_UPDATE     = 194,
+
+    GUILD_SCHEDULED_EVENT_EXCEPTION_CREATE = 200,
+    GUILD_SCHEDULED_EVENT_EXCEPTION_UPDATE = 201,
+    GUILD_SCHEDULED_EVENT_EXCEPTION_DELETE = 202,
 }
 
 export enum ApplicationCommandTypes {
@@ -1217,12 +1254,13 @@ export enum HubTypes {
 }
 
 export enum ActivityTypes {
-    GAME      = 0,
-    STREAMING = 1,
-    LISTENING = 2,
-    WATCHING  = 3,
-    CUSTOM    = 4,
-    COMPETING = 5,
+    GAME        = 0,
+    STREAMING   = 1,
+    LISTENING   = 2,
+    WATCHING    = 3,
+    CUSTOM      = 4,
+    COMPETING   = 5,
+    HANG_STATUS = 6,
 }
 
 export enum ActivityFlags {
@@ -1265,6 +1303,8 @@ export enum GuildMemberFlags {
     COMPLETED_HOME_ACTIONS                         = 1 << 6,
     AUTOMOD_QUARANTINED_USERNAME_OR_GUILD_NICKNAME = 1 << 7,
     AUTOMOD_QUARANTINED_BIO                        = 1 << 8,
+    DM_SETTINGS_UPSELL_ACKNOWLEDGED                = 1 << 9,
+    AUTOMOD_QUARANTINED_CLAN_TAG                   = 1 << 10,
 }
 
 export enum OnboardingPromptTypes {
@@ -1300,16 +1340,26 @@ export enum AttachmentFlags {
 }
 
 export enum SKUTypes {
+    DURABLE_PRIMARY    = 1,
     DURABLE            = 2,
     CONSUMABLE         = 3,
+    BUNDLE             = 4,
     SUBSCRIPTION       = 5,
     SUBSCRIPTION_GROUP = 6,
 }
 
 export enum SKUFlags {
-    AVAILABLE          = 1 << 2,
-    GUILD_SUBSCRIPTION = 1 << 7,
-    USER_SUBSCRIPTION  = 1 << 8,
+    PREMIUM_PURCHASE                   = 1 << 0,
+    HAS_FREE_PREMIUM_CONTENT           = 1 << 1,
+    AVAILABLE                          = 1 << 2,
+    PREMIUM_AND_DISTRIBUTION           = 1 << 3,
+    STICKER_PACK                       = 1 << 4,
+    GUILD_ROLE                         = 1 << 5,
+    AVAILABLE_FOR_SUBSCRIPTION_GIFTING = 1 << 6,
+    APPLICATION_GUILD_SUBSCRIPTION     = 1 << 7,
+    GUILD_SUBSCRIPTION                 = 1 << 7,
+    APPLICATION_USER_SUBSCRIPTION      = 1 << 8,
+    USER_SUBSCRIPTION                  = 1 << 8,
 }
 
 export enum EntitlementTypes {
@@ -1423,7 +1473,6 @@ export enum RoleFlags {
     IN_PROMPT = 1 << 0,
 }
 
-/* eslint-disable @typescript-eslint/no-duplicate-enum-values */
 // entries are intentionally not aligned
 /** The error codes that can be received. See [Discord's Documentation](https://discord.com/developers/docs/topics/opcodes-and-status-codes#json). */
 export enum JSONErrorCodes {
@@ -1438,6 +1487,7 @@ export enum JSONErrorCodes {
     UNKNOWN_MESSAGE = 10_008,
     UNKNOWN_OVERWRITE = 10_009,
     UNKNOWN_PROVIDER = 10_010,
+    UNKNOWN_PLATFORM = 10_010,
     UNKNOWN_ROLE = 10_011,
     UNKNOWN_TOKEN = 10_012,
     UNKNOWN_USER = 10_013,
@@ -1710,4 +1760,3 @@ export enum JSONErrorCodes {
     CANNOT_EXPIRE_A_NON_POLL_MESSAGE = 520_006,
     POLL_IS_ALREADY_EXPIRED = 520_007,
 }
-/* eslint-enable @typescript-eslint/no-duplicate-enum-values */
