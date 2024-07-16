@@ -499,6 +499,22 @@ export interface JSONMessage extends JSONBase {
         users: Array<JSONUser>;
     };
     messageReference?: MessageReference;
+    messageSnapshots?: Array<{
+        message: {
+            attachments: Array<JSONAttachment>;
+            content: string;
+            editedTimestamp: number | null;
+            embeds: Array<Embed>;
+            flags: number;
+            mentions: {
+                channels: Array<string>;
+                roles: Array<string>;
+                users: Array<JSONUser>;
+            };
+            timestamp: number;
+            type: MessageTypes;
+        };
+    }>;
     nonce?: number | string;
     pinned: boolean;
     position?: number;
