@@ -734,6 +734,7 @@ export interface StickerPack {
 export interface RawOAuthGuild {
     approximate_member_count?: number;
     approximate_presence_count?: number;
+    banner: string | null;
     features: Array<GuildFeature>;
     icon: string | null;
     id: string;

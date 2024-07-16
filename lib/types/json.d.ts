@@ -569,6 +569,7 @@ export interface JSONOAuthApplication extends JSONBase {
 export interface JSONOAuthGuild extends JSONBase {
     approximateMemberCount?: number;
     approximatePresenceCount?: number;
+    banner: string | null;
     features: Array<GuildFeature>;
     icon: string | null;
     name: string;
