@@ -204,6 +204,7 @@ export interface Sticker {
 export interface RawMember {
     avatar?: string | null;
     avatar_decoration_data?: RawAvatarDecorationData | null;
+    banner?: string | null;
     communication_disabled_until?: string | null;
     deaf: boolean;
     /** undocumented */

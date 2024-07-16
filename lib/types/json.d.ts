@@ -440,6 +440,7 @@ export interface JSONMediaChannel extends JSONThreadOnlyChannel {
 export interface JSONMember extends JSONBase {
     avatar: string | null;
     avatarDecorationData: AvatarDecorationData | null;
+    banner: string | null;
     communicationDisabledUntil: number | null;
     deaf: boolean;
     flags?: number;
