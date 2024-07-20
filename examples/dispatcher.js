@@ -31,7 +31,7 @@ client.on("typingStart", (channel, user) => {
 // you can manually register handlers (the data parameter is the raw packet `d` from discord)
 // you can provide true as the third parameter to replace any existing handlers
 client.shards.dispatcher.register("MESSAGE_CREATE", (data, shard) => {
-    console.log("New message on shard #%d:", shard, data);
+    console.log("New message on shard #%d:", shard.id, data);
 });
 
 // you can also manually unregister handlers, we provide an object of all defaults for convinence
