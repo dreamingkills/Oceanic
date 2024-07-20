@@ -11,6 +11,7 @@ import type {
 } from "../Constants";
 import type AutoModerationRule from "../structures/AutoModerationRule";
 import type Shard from "../gateway/Shard";
+import type { DispatchEvent } from "../gateway/Dispatcher";
 import type { ClientOptions as WSClientOptions } from "ws";
 
 export type ReconnectDelayFunction = (lastDelay: number, attempts: number) => number;
@@ -58,6 +59,8 @@ interface GatewayOptions {
      * @defaultValue 30000
      */
     connectionTimeout?: number;
+    /** The options for the dispatcher, which handles events. */
+    dispatcher?: DispatcherOptions;
     /**
      * The ID of the first shard to run for this client. Mutually exclusive with `shardIDs`.
      * @defaultValue 0
@@ -132,12 +135,6 @@ interface GatewayOptions {
      * @defaultValue based on `firstShardID` & `lastShardID`
      */
     shardIDs?: Array<number>;
-    /**
-     * If the built-in dispatch handlers should be used. Disabling this will result in no dispatch packets being handled by the client.
-     * Handlers for `READY` and `RESUMED` will always be registered. You must handle **everything else** manually.
-     * @defaultValue true
-     */
-    useDefaultDispatchHandlers?: boolean;
     /** The options to pass to constructed websockets. */
     ws?: WSClientOptions;
 }
@@ -166,13 +163,26 @@ export interface OverrideOptions {
     url?(shard: Shard, totalShards: number): Promise<string>;
 }
 
-export interface ShardManagerInstanceOptions extends Required<Omit<GatewayOptions, "concurrency" | "connectionProperties" | "intents" | "maxShards" | "presence" | "override">> {
+export interface ShardManagerInstanceOptions extends Required<Omit<GatewayOptions, "concurrency" | "connectionProperties" | "intents" | "maxShards" | "presence" | "dispatcher">> {
     concurrency: number;
     connectionProperties: Required<GatewayOptions["connectionProperties"]>;
+    dispatcher: DispatcherInstanceOptions;
     intents: number;
     maxShards: number;
     override: Omit<OverrideOptions, "appendQuery" | "gatewayURLIsResumeURL" | "timeBetweenShardConnects"> & Required<Pick<OverrideOptions, "appendQuery" | "gatewayURLIsResumeURL" | "timeBetweenShardConnects">>;
     presence: Required<UpdatePresenceOptions>;
+}
+
+export interface DispatcherOptions {
+    /** The events to not register. Takes precedence over `whitelist`. */
+    blacklist?: Array<DispatchEvent>;
+    /** The only events to register. `blacklist` takes precedence. */
+    whitelist?: Array<DispatchEvent>;
+}
+
+export interface DispatcherInstanceOptions {
+    blacklist: Array<DispatchEvent> | null;
+    whitelist: Array<DispatchEvent> | null;
 }
 
 export interface GetGatewayResponse {

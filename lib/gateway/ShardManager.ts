@@ -47,9 +47,13 @@ export default class ShardManager extends Collection<number, Shard> {
             },
             concurrency:       options.concurrency === "auto" || options.concurrency && options.concurrency < 1 ? -1 : options.concurrency ?? -1,
             connectionTimeout: options.connectionTimeout ?? 30000,
-            firstShardID:      options.firstShardID && options.firstShardID < 0 ? 0 : options.firstShardID ?? 0,
-            getAllUsers:       options.getAllUsers ?? false,
-            override:          options.override as ShardManagerInstanceOptions["override"] ?? {
+            dispatcher:        {
+                blacklist: options.dispatcher?.blacklist === undefined ? null : options.dispatcher.blacklist,
+                whitelist: options.dispatcher?.whitelist === undefined ? null : options.dispatcher.whitelist
+            },
+            firstShardID: options.firstShardID && options.firstShardID < 0 ? 0 : options.firstShardID ?? 0,
+            getAllUsers:  options.getAllUsers ?? false,
+            override:     options.override as ShardManagerInstanceOptions["override"] ?? {
                 appendQuery:              true,
                 gatewayURLIsResumeURL:    false,
                 timeBetweenShardConnects: 5000
@@ -67,12 +71,11 @@ export default class ShardManager extends Collection<number, Shard> {
                 afk:		      options.presence?.afk ?? false,
                 status:		   options.presence?.status ?? "online"
             },
-            reconnectDelay:             options.reconnectDelay ?? ((lastDelay, attempts): number => Math.pow(attempts + 1, 0.7) * 20000),
-            removeDisallowedIntents:    options.removeDisallowedIntents ?? false,
-            seedVoiceConnections:       options.seedVoiceConnections ?? false,
-            shardIDs:                   options.shardIDs ?? [],
-            useDefaultDispatchHandlers: options.useDefaultDispatchHandlers ?? true,
-            ws:                         options.ws ?? {}
+            reconnectDelay:          options.reconnectDelay ?? ((lastDelay, attempts): number => Math.pow(attempts + 1, 0.7) * 20000),
+            removeDisallowedIntents: options.removeDisallowedIntents ?? false,
+            seedVoiceConnections:    options.seedVoiceConnections ?? false,
+            shardIDs:                options.shardIDs ?? [],
+            ws:                      options.ws ?? {}
         };
         this.options.override.appendQuery ??= (this.options.override.getBot === undefined && this.options.override.url === undefined);
         this.options.override.gatewayURLIsResumeURL ??= (this.options.override.getBot !== undefined || this.options.override.url !== undefined);

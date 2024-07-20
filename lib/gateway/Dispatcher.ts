@@ -1,3 +1,4 @@
+/** @module Dispatcher */
 import type Shard from "./Shard";
 import type ShardManager from "./ShardManager";
 import * as DefaultDispatchEvents from "./events";
@@ -19,13 +20,15 @@ export default class Dispatcher {
             configurable: false
         });
 
-        if (this.manager.options.useDefaultDispatchHandlers) {
-            for (const [event, fn] of Object.entries(DefaultDispatchEvents)) {
-                this.register(event as DispatchEvent, fn as DispatchFunction);
+        const type = this.manager.options.dispatcher.blacklist === null ? "blacklist" :
+            (this.manager.options.dispatcher.whitelist === null ? "whitelist" : "none");
+
+        for (const [event, fn] of Object.entries(DefaultDispatchEvents) as Array<[DispatchEvent, DispatchFunction]>) {
+            if (type === "none" ||
+                (type === "whitelist" && this.manager.options.dispatcher.whitelist?.includes(event)) ||
+                (type === "blacklist" && !this.manager.options.dispatcher.blacklist?.includes(event))) {
+                this.register(event, fn);
             }
-        } else {
-            this.register("READY", DefaultDispatchEvents.READY);
-            this.register("RESUMED", DefaultDispatchEvents.RESUMED);
         }
     }
 
