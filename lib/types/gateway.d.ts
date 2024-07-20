@@ -132,6 +132,12 @@ interface GatewayOptions {
      * @defaultValue based on `firstShardID` & `lastShardID`
      */
     shardIDs?: Array<number>;
+    /**
+     * If the built-in dispatch handlers should be used. Disabling this will result in no dispatch packets being handled by the client.
+     * Handlers for `READY` and `RESUMED` will always be registered. You must handle **everything else** manually.
+     * @defaultValue true
+     */
+    useDefaultDispatchHandlers?: boolean;
     /** The options to pass to constructed websockets. */
     ws?: WSClientOptions;
 }
