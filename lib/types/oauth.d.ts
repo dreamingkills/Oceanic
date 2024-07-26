@@ -3,7 +3,13 @@ import type { RawUser } from "./users";
 import type { OAuthWebhook } from "./webhooks";
 import type { RawIntegration } from "./guilds";
 import type { LocaleMap, RawPartialApplication } from "./applications";
-import type { ConnectionService, PermissionName, RoleConnectionMetadataTypes, ConnectionVisibilityTypes } from "../Constants";
+import type {
+    ConnectionService,
+    PermissionName,
+    RoleConnectionMetadataTypes,
+    ConnectionVisibilityTypes,
+    ApplicationIntegrationTypes
+} from "../Constants";
 import type PartialApplication from "../structures/PartialApplication";
 import type User from "../structures/User";
 import type Webhook from "../structures/Webhook";
@@ -62,6 +68,8 @@ export interface OAuthURLOptions {
     disableGuildSelect?: boolean;
     /** The id of the guild to preselect. */
     guildID?: string;
+    /** The integration (install) type. */
+    integrationType?: ApplicationIntegrationTypes;
     /** The permissions to request. */
     permissions?: string;
     /** `consent` to show the prompt, `none` to not show the prompt if the user has already authorized previously. */

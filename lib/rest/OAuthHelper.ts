@@ -63,6 +63,9 @@ export default class OAuthHelper {
         if (options.state) {
             params.push(`state=${options.state}`);
         }
+        if (options.integrationType) {
+            params.push(`integration_type=${options.integrationType}`);
+        }
         return `${BASE_URL}${Routes.OAUTH_AUTHORIZE}?${params.join("&")}`;
     }
 
