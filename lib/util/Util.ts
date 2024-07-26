@@ -118,6 +118,17 @@ export default class Util {
         return (id === undefined ? undefined : opt[id]) ?? opt.default ?? Infinity;
     }
 
+    /** @hidden intended for internal use only */
+    _isModuleInstalled(name: string): boolean {
+        try {
+            // eslint-disable-next-line unicorn/prefer-module
+            require(name);
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
     _setLimit(values?: Record<string, number> | number, defaultValue = Infinity): Record<string, number> | number {
         if (values === undefined) {
             return defaultValue;

@@ -26,9 +26,10 @@ interface GatewayOptions {
     autoReconnect?: boolean;
     /**
      * If packets to and from Discord should be compressed.
+     * @note `true` is the same as `zlib-stream`. This behavior is deprecated.
      * @defaultValue false
      */
-    compress?: boolean;
+    compress?: boolean | "zlib-stream" | "zstd-stream";
     /**
      * The concurrency for shard connections. If you don't know what this is, don't mess with it. Only bots in >150,000 servers can use any non-default value.
      * @defaultValue 1
@@ -132,6 +133,7 @@ interface GatewayOptions {
     seedVoiceConnections?: boolean;
     /**
      * An array of shard IDs to run for this client. Mutually exclusive with `firstShardID` & `lastShardID`.
+     * An array of shard IDs to run for this client. Mutually exclusive with `firstShardID` & `lastShardID`.
      * @defaultValue based on `firstShardID` & `lastShardID`
      */
     shardIDs?: Array<number>;
@@ -163,7 +165,8 @@ export interface OverrideOptions {
     url?(shard: Shard, totalShards: number): Promise<string>;
 }
 
-export interface ShardManagerInstanceOptions extends Required<Omit<GatewayOptions, "concurrency" | "connectionProperties" | "intents" | "maxShards" | "presence" | "dispatcher">> {
+export interface ShardManagerInstanceOptions extends Required<Omit<GatewayOptions, "concurrency" | "connectionProperties" | "intents" | "maxShards" | "presence" | "dispatcher" | "compress">> {
+    compress: false | "zlib-stream" | "zstd-stream";
     concurrency: number;
     connectionProperties: Required<GatewayOptions["connectionProperties"]>;
     dispatcher: DispatcherInstanceOptions;

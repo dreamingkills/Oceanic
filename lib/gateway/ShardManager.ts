@@ -22,6 +22,7 @@ try {
 /* eslint-enable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment, unicorn/prefer-module */
 
 
+let __compressionTrueDeprecationWarning = 0;
 /** A manager for all the client's shards. */
 export default class ShardManager extends Collection<number, Shard> {
     private _buckets: Record<number, number>;
@@ -39,7 +40,7 @@ export default class ShardManager extends Collection<number, Shard> {
         this._connectTimeout = null;
         this.options = {
             autoReconnect:        options.autoReconnect ?? true,
-            compress:             options.compress ?? false,
+            compress:             options.compress === true ? (__compressionTrueDeprecationWarning++, "zlib-stream") : options.compress ?? false,
             connectionProperties: {
                 browser: options.connectionProperties?.browser ?? "Oceanic",
                 device:  options.connectionProperties?.device ?? "Oceanic",
@@ -77,6 +78,11 @@ export default class ShardManager extends Collection<number, Shard> {
             shardIDs:                options.shardIDs ?? [],
             ws:                      options.ws ?? {}
         };
+        if (__compressionTrueDeprecationWarning === 1) {
+            process.emitWarning("Using `compress: true` is deprecated and will be removed in a future version. Please use `compress: \"zlib-stream\"` instead.", {
+                code: "OCEANIC_GATEWAY_COMPRESSION_TRUE_DEPRECATION"
+            });
+        }
         this.options.override.appendQuery ??= (this.options.override.getBot === undefined && this.options.override.url === undefined);
         this.options.override.gatewayURLIsResumeURL ??= (this.options.override.getBot !== undefined || this.options.override.url !== undefined);
         this.options.override.timeBetweenShardConnects ??= 5000;
@@ -214,7 +220,8 @@ export default class ShardManager extends Collection<number, Shard> {
         if (url && this.options.override.appendQuery) {
             url += `?v=${GATEWAY_VERSION}&encoding=${Erlpack ? "etf" : "json"}`;
             if (this.options.compress) {
-                url += "&compress=zlib-stream";
+                const type = this.options.compress === "zstd-stream" ? "zstd-stream" : "zlib-stream";
+                url += `&compress=${type}`;
             }
             this._gatewayURL = url;
         }
