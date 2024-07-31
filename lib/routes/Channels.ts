@@ -1112,7 +1112,7 @@ export default class Channels {
                 limit:          options.limit,
                 [chosenOption]: options[chosenOption]
             });
-            for (const message of messages) {
+            for (const message of Array.from(messages)) {
                 const f = filter(message);
                 if (f === false) {
                     messages.splice(messages.indexOf(message), 1);
