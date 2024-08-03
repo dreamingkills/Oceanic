@@ -39,7 +39,8 @@ import type {
     GetPollAnswerUsersOptions,
     Call,
     MessageSnapshot,
-    MessageMentions
+    MessageMentions,
+    MessagePollResults
 } from "../types/channels";
 import type { RawMember } from "../types/guilds";
 import type { DeleteWebhookMessageOptions, EditWebhookMessageOptions } from "../types/webhooks";
@@ -108,6 +109,8 @@ export default class Message<T extends AnyTextableChannel | Uncached = AnyTextab
     pinned: boolean;
     /** The poll on this message, if any. */
     poll?: Poll;
+    /** The poll results extracted from the embeds of this message. */
+    pollResults?: MessagePollResults;
     /** This message's relative position, if in a thread. */
     position?: number;
     /** The reactions on this message. */
@@ -224,6 +227,21 @@ export default class Message<T extends AnyTextableChannel | Uncached = AnyTextab
         }
         if (data.embeds !== undefined) {
             this.embeds = this.client.util.embedsToParsed(data.embeds);
+            const pollResultEmbed = this.embeds.find(embed => embed.type === "poll_result");
+            if (pollResultEmbed) {
+                const questionText = pollResultEmbed.fields!.find(field => field.name === "poll_question_text")!.value;
+                const totalVotes = pollResultEmbed.fields!.find(field => field.name === "total_votes")!.value;
+                const victorAnswerID = pollResultEmbed.fields!.find(field => field.name === "victor_answer_id")?.value;
+                const victorAnswerText = pollResultEmbed.fields!.find(field => field.name === "victor_answer_text")?.value;
+                const victorAnswerVotes = pollResultEmbed.fields!.find(field => field.name === "victor_answer_votes")!.value;
+                this.pollResults = {
+                    questionText,
+                    totalVotes:        Number(totalVotes),
+                    victorAnswerID:    victorAnswerID === undefined ? undefined : Number(victorAnswerID),
+                    victorAnswerText:  victorAnswerText === undefined ? undefined : victorAnswerText,
+                    victorAnswerVotes: Number(victorAnswerVotes)
+                };
+            }
         }
         if (data.flags !== undefined) {
             this.flags = data.flags;
@@ -565,6 +583,8 @@ export default class Message<T extends AnyTextableChannel | Uncached = AnyTextab
             nonce:             this.nonce,
             pinned:            this.pinned,
             position:          this.position,
+            poll:              this.poll?.toJSON(),
+            pollResults:       this.pollResults,
             reactions:         this.reactions,
             referencedMessage: this.referencedMessage?.toJSON(),
             stickerItems:      this.stickerItems,

@@ -372,7 +372,7 @@ export interface Embed extends EmbedBase {
     video?: EmbedVideo;
 }
 
-export type EmbedType = "rich" | "image" | "video" | "gifv" | "article" | "link";
+export type EmbedType = "rich" | "image" | "video" | "gifv" | "article" | "link" | "poll_result";
 
 export interface EmbedAuthorBase {
     name: string;
@@ -1305,4 +1305,13 @@ export interface MessageMentions {
     roles: Array<string>;
     /** The users mentioned in this message. */
     users: Array<User>;
+}
+
+
+export interface MessagePollResults {
+    questionText: string;
+    totalVotes: number;
+    victorAnswerID?: number;
+    victorAnswerText?: string;
+    victorAnswerVotes: number;
 }

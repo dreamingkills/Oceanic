@@ -42,7 +42,8 @@ import type {
     ThreadOnlyChannels,
     PollQuestion,
     PollResults,
-    PollAnswer
+    PollAnswer,
+    MessagePollResults
 } from "./channels";
 import type { ScheduledEventEntityMetadata } from "./scheduled-events";
 import type { AvatarDecorationData } from "./users";
@@ -518,6 +519,8 @@ export interface JSONMessage extends JSONBase {
     }>;
     nonce?: number | string;
     pinned: boolean;
+    poll?: JSONPoll;
+    pollResults?: MessagePollResults;
     position?: number;
     reactions: Array<MessageReaction>;
     referencedMessage?: JSONMessage | null;
