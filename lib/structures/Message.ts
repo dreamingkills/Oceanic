@@ -109,7 +109,7 @@ export default class Message<T extends AnyTextableChannel | Uncached = AnyTextab
     pinned: boolean;
     /** The poll on this message, if any. */
     poll?: Poll;
-    /** The poll results extracted from the embeds of this message. */
+    /** The poll results extracted from the embeds of this message. This will only be present for {@link Constants~MessageTypes.POLL_RESULT | POLL_RESULT } messages. */
     pollResults?: MessagePollResults;
     /** This message's relative position, if in a thread. */
     position?: number;
