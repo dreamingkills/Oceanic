@@ -27,7 +27,7 @@ export interface VoiceRegion {
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { type DiscordGatewayAdapterCreator } from "@discordjs/voice";
+// import { type DiscordGatewayAdapterCreator } from "@discordjs/voice";
 
 export interface JoinVoiceChannelOptions {
     /** The ID of the channel to join. */
@@ -41,5 +41,5 @@ export interface JoinVoiceChannelOptions {
     /** Whether to join the channel muted. Defaults to true. */
     selfMute?: boolean;
     /** The voice adapter creator for this voice connection. Use the \<Guild\>.voiceAdapterCreator property for this. */
-    voiceAdapterCreator: DiscordGatewayAdapterCreator;
+    // voiceAdapterCreator: DiscordGatewayAdapterCreator;
 }

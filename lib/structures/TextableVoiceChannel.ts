@@ -9,10 +9,10 @@ import TypedCollection from "../util/TypedCollection";
 import type { AnyVoiceChannel, RawStageChannel, RawVoiceChannel, VoiceChannels } from "../types/channels";
 import type { JSONTextableVoiceChannel } from "../types/json";
 import type { RawMember } from "../types/guilds";
-import type { JoinVoiceChannelOptions } from "../types/voice";
+// import type { JoinVoiceChannelOptions } from "../types/voice";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import type { VoiceConnection } from "@discordjs/voice";
+// import type { VoiceConnection } from "@discordjs/voice";
 
 /** Represents a textable voice channel. */
 export default class TextableVoiceChannel<T extends AnyVoiceChannel = AnyVoiceChannel> extends TextableChannel<T> {
@@ -65,21 +65,21 @@ export default class TextableVoiceChannel<T extends AnyVoiceChannel = AnyVoiceCh
      * Join this stage channel.
      * @param options The options to join the channel with.
      */
-    join(options: Omit<JoinVoiceChannelOptions, "guildID" | "channelID" | "voiceAdapterCreator">): VoiceConnection {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument
-        return this.client.joinVoiceChannel({
-            ...options,
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            voiceAdapterCreator: this.guild.voiceAdapterCreator,
-            guildID:             this.guildID,
-            channelID:           this.id
-        });
-    }
+    // join(options: Omit<JoinVoiceChannelOptions, "guildID" | "channelID" | "voiceAdapterCreator">): VoiceConnection {
+    //     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument
+    //     return this.client.joinVoiceChannel({
+    //         ...options,
+    //         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    //         voiceAdapterCreator: this.guild.voiceAdapterCreator,
+    //         guildID:             this.guildID,
+    //         channelID:           this.id
+    //     });
+    // }
 
     /** Leave this stage channel. */
-    leave(): void {
-        return this.client.leaveVoiceChannel(this.guildID);
-    }
+    // leave(): void {
+    //     return this.client.leaveVoiceChannel(this.guildID);
+    // }
 
     override toJSON(): JSONTextableVoiceChannel {
         return {

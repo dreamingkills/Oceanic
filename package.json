@@ -76,9 +76,6 @@
   "engines": {
     "node": ">=18.13.0"
   },
-  "optionalDependencies": {
-    "@discordjs/voice": "^0.17.0"
-  },
   "pnpm": {
     "patchedDependencies": {
       "typedoc-plugin-merge-modules@5.1.0": "patches/typedoc-plugin-merge-modules@5.1.0.patch"
